@@ -1,0 +1,178 @@
+1. Fourier Series of a Square Wave::
+clc; clear; close all'
+'
+t = linspace(-pi, pi, 1000);
+f = zeros(size(t));
+N = 10;
+
+for n = 1:2:(2*N-1)
+    f = f + (4/(n*pi)) * sin(n*t);
+end
+
+plot(t, f, 'r', 'LineWidth', 2);
+grid on;
+xlabel('Time t'); ylabel('f(t)');
+title(['Fourier Series of Square Wave with N = ', num2str(N)]);
+
+2. Fourier Series of a Sawtooth Wave
+Mathematical Form:
+f(t) = 2 * [(-1)^(n+1)/n] * sin(n*t), summed over n from 1 to ∞.
+This is an odd function, and hence only sine terms appear.
+MATLAB Code:
+
+clc; clear; close all
+
+t = linspace(-pi, pi, 1000);
+f = zeros(size(t));
+N = 10;
+
+for n = 1:N
+    f = f + ((-1)^(n+1) * 2 / n) * sin(n * t);
+end
+
+plot(t, f, 'b', 'LineWidth', 2);
+grid on;
+xlabel('Time t'); ylabel('f(t)');
+title(['Fourier Series of Sawtooth Wave with N = ', num2str(N)]);
+
+3. Fourier Series of a Triangular Wave
+Mathematical Form:
+f(t) = (8/π²) * [cos(t)/1² - cos(3t)/3² + cos(5t)/5² - ...]
+This is an even function, so it contains only cosine terms (odd harmonics).
+MATLAB Code:
+
+clc; clear; close all
+
+t = linspace(-pi, pi, 1000);
+f = zeros(size(t));
+N = 10;
+
+for n = 1:2:(2*N-1)
+    f = f + ((8 / (pi^2)) * ((-1)^((n-1)/2) / n^2)) * cos(n * t);
+end
+
+plot(t, f, 'm', 'LineWidth', 2);
+grid on;
+xlabel('Time t'); ylabel('f(t)');
+title(['Fourier Series of Triangular Wave with N = ', num2str(N)]);
+
+
+4. MATLAB script to plot the above expansion:
+
+x = 0:1/1000:2*pi;           %discretize interval 
+f = exp(x).*sin(2*x);        %declare function 
+f_exp=0;                     %initialize expansion 
+N = 6;                       %number of harmonics 
+for n=1:N                    %iterate partial sum  
+An = (exp(2*pi)-1)/(2*pi)*(4*n^2-20)/(n^4-6*n^2+25);  
+Bn = (exp(2*pi)-1)/(2*pi)*(8*n)/(n^4-6*n^2+25); 
+f_exp = f_exp + An*cos(n*x) + Bn*sin(n*x); 
+end 
+A0 = (1-exp(2*pi))/(5*pi);   
+f_exp = f_exp+A0;            %add A0 term 
+plot(x,f,x,f_exp)            %plot function and expansion 
+title('Fourier Expansion e^xsin(2x) on [0,2\pi]');  
+xlabel('x'); ylabel('f(x)');  
+legend('e^xsin(2x)','Fourier Expansion') 
+
+LAB 5::
+%1. Fs = 1000;             % Sampling frequency (Hz)
+T = 1/Fs;              % Sampling period
+L = 1000;              % Number of samples
+t = (0:L-1)*T;         % Time vector
+
+f_sin = 50;            % Frequency of sine wave (Hz)
+x = sin(2*pi*f_sin*t); % Sine wave signal
+
+% FFT
+Y = fft(x);
+P2 = abs(Y/L);         % Two-sided spectrum
+P1 = P2(1:L/2+1);      % One-sided spectrum
+P1(2:end-1) = 2*P1(2:end-1);
+
+f = Fs*(0:(L/2))/L;    % Frequency vector
+
+% Plot
+plot(f, P1, 'LineWidth', 2);
+title('Single-Sided Amplitude Spectrum of Sine Wave');
+xlabel('Frequency (Hz)');
+ylabel('|P1(f)|');
+grid on;
+
+%2.% Parameters
+Fs = 1000;              % Sampling frequency (Hz)
+T = 1/Fs;               % Sampling period
+L = 1000;               % Number of samples
+t = (0:L-1)*T;          % Time vector
+
+% Composite signal: sum of 3 sine waves
+f1 = 50;                % Frequency 1 (Hz)
+f2 = 120;               % Frequency 2 (Hz)
+f3 = 200;               % Frequency 3 (Hz)
+
+x = 0.7*sin(2*pi*f1*t) + sin(2*pi*f2*t) + 0.5*sin(2*pi*f3*t);
+
+% FFT
+Y = fft(x);
+P2 = abs(Y/L);           % Two-sided spectrum
+P1 = P2(1:L/2+1);        % One-sided spectrum
+P1(2:end-1) = 2*P1(2:end-1);
+
+f = Fs*(0:(L/2))/L;      % Frequency vector
+
+% Plot
+plot(f, P1, 'LineWidth', 2);
+title('FFT of Composite Signal');
+xlabel('Frequency (Hz)');
+ylabel('|P1(f)|');
+grid on;
+
+%% Parameters
+Fs = 1000;            % Sampling frequency (Hz)
+T = 1/Fs;             % Sampling period
+L = 1000;             % Length of signal
+t = (0:L-1)*T;        % Time vector
+
+% Signal: sine wave at 50 Hz
+f_sin = 50;           
+x = sin(2*pi*f_sin*t);
+
+% 3.Fourier Transform using fft()
+% Parameters
+Fs = 1000;            % Sampling frequency (Hz)
+T = 1/Fs;             % Sampling period
+L = 1000;             % Length of signal
+t = (0:L-1)*T;        % Time vector
+
+% Signal: sine wave at 50 Hz
+f_sin = 50;           
+x = sin(2*pi*f_sin*t);
+
+% Fourier Transform using fft()
+Y = fft(x);           % Apply FFT
+P2 = abs(Y/L);        % Two-sided spectrum
+P1 = P2(1:L/2+1);     % One-sided spectrum
+P1(2:end-1) = 2*P1(2:end-1);  % Adjust amplitudes
+
+% Frequency vector
+f = Fs*(0:(L/2))/L;
+
+% Plot the amplitude spectrum
+plot(f, P1, 'LineWidth', 2);
+title('Fourier Transform using fft()');
+xlabel('Frequency (Hz)');
+ylabel('|Amplitude|');
+grid on;
+
+			
+
+
+
+
+
+
+
+
+
+
+
